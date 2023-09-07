@@ -4,5 +4,5 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig(({command, mode}) => ({
   plugins: [vue()],
-  publicDir: command === 'build' ? '/vue3-twitter-clone/' : '/'
+  publicDir: command === 'build' ? '/vue3-twitter-clone' : '/'
 }));
