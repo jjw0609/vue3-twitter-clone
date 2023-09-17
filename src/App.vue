@@ -65,7 +65,7 @@
     </div>
     <!-- main section -->
     <div class="flex-1 flex h-screen">
-      <Notifications />
+      <Messages />
     </div>
   </div>
 </template>
