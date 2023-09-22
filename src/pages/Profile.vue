@@ -21,9 +21,7 @@
       </div>
       <!-- profile edit button -->
       <div class="text-right mt-2 mr-2">
-        <button class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">
-          프로필 수정
-        </button>
+        <button class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
       </div>
       <!-- user info -->
       <div class="mx-3 mt-2">
