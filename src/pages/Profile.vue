@@ -13,7 +13,7 @@
         </div>
       </div>
       <!-- background image -->
-      <div class="bg-gray-300 h-40 relative">
+      <div class="bg-gray-300 h-40 relative flex-none">
         <!-- profile image -->
         <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2">
           <img src="http://picsum.photos/200" class="rounded-full hover:opacity-90 hover:opacity-100 cursor-pointer" />
@@ -53,6 +53,10 @@
           트윗
         </div>
       </div>
+      <!-- tweets -->
+      <div class="overflow-y-auto">
+        <Tweet v-for="tweet in 10" :key="tweet" />
+      </div>
     </div>
     <!-- trend section -->
     <Trends />
@@ -61,8 +65,9 @@
 
 <script>
 import Trends from '../components/Trends.vue';
+import Tweet from '../components/Tweet.vue';
   export default {
-    components: { Trends }
+    components: { Trends, Tweet }
   }
 </script>
 
