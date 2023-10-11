@@ -39,7 +39,7 @@
 
 <script>
   export default{
-    props: ['currentUser'],
+    props: ['currentUser']
   }
 </script>
 
