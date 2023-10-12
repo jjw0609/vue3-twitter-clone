@@ -66,7 +66,6 @@ export default {
       } finally {
         loading.value = false;
       }
-
     }
 
     return {
