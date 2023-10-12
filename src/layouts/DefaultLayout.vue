@@ -63,6 +63,7 @@ import { ref, onBeforeMount, computed } from 'vue';
 import router from '../router';
 import { auth } from '../firebase';
 import store from '../store';
+
 export default {
   setup() {
     const routes = ref([]);
