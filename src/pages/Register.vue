@@ -17,6 +17,7 @@
 import { ref } from 'vue';
 import { auth, USER_COLLECTION } from '../firebase';
 import { useRouter } from 'vue-router';
+
 export default {
   setup() {
     const username = ref('');
