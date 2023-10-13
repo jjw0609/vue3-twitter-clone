@@ -47,7 +47,7 @@ export default {
           created_at: Date.now(),
           num_comments: 0,
           num_retweets: 0,
-          num_likes: 0,
+          num_likes: 0
         })
       } catch (e) {
         console.log('on add tweet error on homepage:', e);
