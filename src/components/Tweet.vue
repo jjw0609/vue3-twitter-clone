@@ -43,7 +43,7 @@
 <script>
 import moment from 'moment';
 import {ref} from 'vue';
-import commentModal from './commentModal.vue';
+import commentModal from './CommentModal.vue';
 
 export default {
   components: { commentModal },
