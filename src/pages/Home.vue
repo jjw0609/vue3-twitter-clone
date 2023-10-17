@@ -32,6 +32,7 @@ import { ref, computed, onBeforeMount } from 'vue';
 import store from '../store';
 import {TWEET_COLLECTION, USER_COLLECTION} from '../firebase';
 import addTweet from '../utils/addTweet';
+
 export default {
   components: { Trends, Tweet },
   setup() {
