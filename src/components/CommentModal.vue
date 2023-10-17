@@ -43,7 +43,7 @@
               <!-- tweet button -->
               <div class="text-right hidden sm:block">
                 <button v-if="!tweetBody.length" class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full">답글</button>
-                <button v-else @click="onAddTweet" class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full">답글</button>
+                <button v-else @click="onCommentTweet" class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full">답글</button>
               </div>
             </div>
           </div>
@@ -57,16 +57,42 @@
 import { ref, computed } from 'vue';
 import moment from 'moment';
 import store from '../store';
+import {COMMENT_COLLECTION, TWEET_COLLECTION} from '../firebase';
+import firebase from 'firebase';
+
 export default {
   props: ['tweet'],
-  setup(props, { emit }) {
+  setup(props, {emit}) {
     const tweetBody = ref('');
     const currentUser = computed(() => store.state.user);
+
+    const onCommentTweet = async () => {
+      try {
+        const doc = COMMENT_COLLECTION.doc();
+        await doc.set({
+          id: doc.id,
+          from_tweet_id: props.tweet.id,
+          comment_tweet_body: tweetBody.value,
+          uid: currentUser.value.uid,
+          created_at: Date.now()
+        })
+
+        await TWEET_COLLECTION.doc(props.tweet.id).update({
+          'num_comments': firebase.firestore.FieldValue.increment(1)
+        })
+
+        emit('close-modal');
+
+      } catch(e) {
+        console.log('on comment tweet error:' + e);
+      }
+    }
 
     return {
       tweetBody,
       moment,
-      currentUser
+      currentUser,
+      onCommentTweet
     }
   }
 }
