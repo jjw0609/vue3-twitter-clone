@@ -21,12 +21,16 @@
           <span className="ml-1 text-sm">{{ tweet.num_comments }}</span>
         </div>
         <!-- retweet button -->
-        <div className="text-gray-500 hover:text-green-500" @click="handleRetweet(tweet)">
+        <div v-if="!tweet.isRetweeted" className="text-gray-500 hover:text-green-500" @click="handleRetweet(tweet)">
+          <i className="fa fa-retweet hover:bg-green-50 rounded-full p-2"></i>
+          <span className="ml-1 text-sm">{{ tweet.num_retweets }}</span>
+        </div>
+        <div v-else className="text-green-400" @click="handleRetweet(tweet)">
           <i className="fa fa-retweet hover:bg-green-50 rounded-full p-2"></i>
           <span className="ml-1 text-sm">{{ tweet.num_retweets }}</span>
         </div>
         <!-- like button -->
-        <div className="text-gray-500 hover:text-red-500">
+        <div className="text-gray-400 hover:text-red-400">
           <i className="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
           <span className="ml-1 text-sm">{{ tweet.num_likes }}</span>
         </div>
