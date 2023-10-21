@@ -30,7 +30,11 @@
           <span className="ml-1 text-sm">{{ tweet.num_retweets }}</span>
         </div>
         <!-- like button -->
-        <div className="text-gray-400 hover:text-red-400">
+        <div v-if="!tweet.isLiked" className="text-gray-400 hover:text-red-400" @click="handleLikes(tweet)">
+          <i className="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
+          <span className="ml-1 text-sm">{{ tweet.num_likes }}</span>
+        </div>
+        <div v-else className="text-red-400" @click="handleLikes(tweet)" >
           <i className="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
           <span className="ml-1 text-sm">{{ tweet.num_likes }}</span>
         </div>
@@ -49,6 +53,7 @@ import moment from 'moment';
 import {ref} from 'vue';
 import commentModal from './CommentModal.vue';
 import handleRetweet from '../utils/handleRetweet';
+import handleLikes from '../utils/handleLikes';
 
 export default {
   components: { commentModal },
@@ -59,7 +64,8 @@ export default {
     return {
       moment,
       showCommentModal,
-      handleRetweet
+      handleRetweet,
+      handleLikes
     }
   }
 }
