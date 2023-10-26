@@ -42,6 +42,10 @@ export default {
     const tweets = ref([]);
 
     onBeforeMount(() => {
+      USER_COLLECTION.doc(currentUser.value.uid).onSnapshot(doc => {
+        store.commit('SET_USER', doc.data());
+      })
+
       TWEET_COLLECTION.orderBy('created_at', 'desc').onSnapshot(snapshot => {
         snapshot.docChanges().forEach(async change => {
           let tweet = await getTweetInfo(change.doc.data(), currentUser.value);
