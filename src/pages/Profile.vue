@@ -40,22 +40,19 @@
       </div>
       <!-- tabs -->
       <div class="flex border-b border-color mt-3">
-        <div class="py-3 text-primary font-bold border-b border-primary text-center w-1/4 hover:bg-blue-50 cursor-pointer hover:text-primary">
+        <div @click="currentTab = 'tweet'" :class="`${currentTab == 'tweet' ? 'border-b border-primary text-primary' : 'text-gray'} py-3 font-bold text-center w-1/3 hover:bg-blue-50 cursor-pointer hover:text-primary`">
           트윗
         </div>
-        <div class="py-3 text-gray font-bold text-center w-1/4 hover:bg-blue-50 cursor-pointer hover:text-primary">
-          트윗
+        <div @click="currentTab = 'retweet'" :class="`${currentTab == 'retweet' ? 'border-b border-primary text-primary' : 'text-gray'} py-3 font-bold text-center w-1/3 hover:bg-blue-50 cursor-pointer hover:text-primary`">
+          리트윗
         </div>
-        <div class="py-3 text-gray font-bold text-center w-1/4 hover:bg-blue-50 cursor-pointer hover:text-primary">
-          트윗
-        </div>
-        <div class="py-3 text-gray font-bold text-center w-1/4 hover:bg-blue-50 cursor-pointer hover:text-primary">
-          트윗
+        <div @click="currentTab = 'like'" :class="`${currentTab == 'like' ? 'border-b border-primary text-primary' : 'text-gray'} py-3 font-bold text-center w-1/3 hover:bg-blue-50 cursor-pointer hover:text-primary`">
+          좋아요
         </div>
       </div>
       <!-- tweets -->
       <div class="overflow-y-auto">
-        <Tweet v-for="tweet in 10" :key="tweet" :currentUser="currentUser" :tweet="tweet" />
+        <Tweet v-for="tweet in currentTab == 'tweet' ? tweets : currentTab == 'retweet' ? reTweets : likeTweets" :key="tweet" :currentUser="currentUser" :tweet="tweet" />
       </div>
     </div>
     <!-- trend section -->
@@ -68,15 +65,23 @@ import Trends from '../components/Trends.vue';
 import Tweet from '../components/Tweet.vue';
 import store from '../store';
 import { computed, ref, onBeforeMount } from 'vue';
-import { TWEET_COLLECTION } from '../firebase';
+import {LIKE_COLLECTION, RETWEET_COLLECTION, TWEET_COLLECTION, USER_COLLECTION} from '../firebase';
+import getTweetInfo from '../utils/getTweetInfo';
 import moment from 'moment';
   export default {
     components: { Trends, Tweet },
     setup() {
       const currentUser = computed(() => store.state.user);
       const tweets = ref([]);
+      const reTweets = ref([]);
+      const likeTweets = ref([]);
+      const currentTab = ref('tweet');
 
       onBeforeMount(() => {
+        USER_COLLECTION.doc(currentUser.value.uid).onSnapshot(doc => {
+          store.commit('SET_USER', doc.data());
+        })
+
         TWEET_COLLECTION.where('uid', '==', currentUser.value.uid)
             .orderBy('created_at', 'desc')
             .onSnapshot((snapshot) => {
@@ -92,10 +97,51 @@ import moment from 'moment';
             }
           })
         })
+
+        RETWEET_COLLECTION.where('uid', '==', currentUser.value.uid)
+          .orderBy('created_at', 'desc')
+          .onSnapshot((snapshot) => {
+            snapshot.docChanges().forEach(async (change) => {
+              const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get();
+              let tweet = await getTweetInfo(doc.data(), currentUser.value)
+
+              if(change.type === 'added') {
+                reTweets.value.splice(change.newIndex, 0, tweet);
+              } else if(change.type === 'modified') {
+                reTweets.value.splice(change.oldIndex, 1, tweet);
+              } else if(change.type === 'removed') {
+                reTweets.value.splice(change.oldIndex, 1);
+              }
+            })
+          })
+
+        LIKE_COLLECTION.where('uid', '==', currentUser.value.uid)
+        .orderBy('created_at', 'desc')
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach(async (change) => {
+            const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get();
+            let tweet = await getTweetInfo(doc.data(), currentUser.value)
+
+            if(change.type === 'added') {
+              likeTweets.value.splice(change.newIndex, 0, tweet);
+            } else if(change.type === 'modified') {
+              likeTweets.value.splice(change.oldIndex, 1, tweet);
+            } else if(change.type === 'removed') {
+              likeTweets.value.splice(change.oldIndex, 1);
+            }
+          })
+        })
+
+
       })
 
       return {
-        currentUser
+        currentUser,
+        tweets,
+        reTweets,
+        likeTweets,
+        moment,
+        currentTab
       }
     }
   }
