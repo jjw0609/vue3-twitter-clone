@@ -63,6 +63,7 @@
     </div>
     <!-- trend section -->
     <Trends />
+    <profile-edit-modal></profile-edit-modal>
   </div>
 </template>
 
@@ -77,8 +78,9 @@ import moment from 'moment'
 import { useRoute } from 'vue-router'
 import router from '../router'
 import firebase from 'firebase'
+import ProfileEditModal from "../components/ProfileEditModal.vue";
 export default {
-  components: { Trends, Tweet },
+  components: { Trends, Tweet, ProfileEditModal },
   setup() {
     const currentUser = computed(() => store.state.user)
     const profileUser = ref(null)
