@@ -23,7 +23,7 @@
       <!-- profile edit button -->
       <div class="text-right mt-2 mr-2 mb-10 relative">
         <div v-if="currentUser.uid === profileUser.uid">
-          <button class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
+          <button @click="showProfileEditModal = true" class="border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full">프로필 수정</button>
         </div>
         <div v-else>
           <div v-if="currentUser.followings.includes(profileUser.uid)" class="" @click="onUnFollow">
@@ -63,7 +63,7 @@
     </div>
     <!-- trend section -->
     <Trends />
-    <profile-edit-modal></profile-edit-modal>
+    <profile-edit-modal v-if="showProfileEditModal" @close-modal="showProfileEditModal=false"></profile-edit-modal>
   </div>
 </template>
 
@@ -89,6 +89,8 @@ export default {
     const likeTweets = ref([])
     const currentTab = ref('tweet')
     const route = useRoute()
+
+    const showProfileEditModal =  ref(false);
 
     onBeforeMount(() => {
       const profileUID = route.params.uid ?? currentUser.value.uid
@@ -182,6 +184,7 @@ export default {
       router,
       onFollow,
       onUnFollow,
+      showProfileEditModal
     }
   },
 }
