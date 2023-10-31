@@ -36,13 +36,13 @@
             <div class="text-sm">이름</div>
             <input type="text" :value="currentUser.email" class="text-black focus:outline-none" />
           </div>
-          <div class="mx-2 my-1 px-5 py-5 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
+          <div class="mx-2 my-1 px-2 py-5 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
             <input type="text" placeholder="자기소개" class="text-black focus:outline-none" />
           </div>
-          <div class="mx-2 my-1 px-5 py-3 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
+          <div class="mx-2 my-1 px-2 py-3 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
             <input type="text" placeholder="위치" class="text-black focus:outline-none" />
           </div>
-          <div class="mx-2 my-1 px-5 py-3 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
+          <div class="mx-2 my-1 px-2 py-3 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary">
             <input type="text" placeholder="웹사이트" class="text-black focus:outline-none" />
           </div>
         </div>
@@ -52,90 +52,90 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-import addTweet from '../utils/addTweet';
-import store from '../store';
-import { storage } from '../firebase';
-import { USER_COLLECTION } from "../firebase";
+import { ref, computed } from 'vue'
+import addTweet from '../utils/addTweet'
+import store from '../store'
+import { storage, USER_COLLECTION } from '../firebase'
 export default {
   setup(props, { emit }) {
-    const tweetBody = ref('');
-    const currentUser = computed(() => store.state.user);
+    const tweetBody = ref('')
+    const currentUser = computed(() => store.state.user)
 
-    const profileImage = ref(null);
-    const profileImageData = ref(null);
-    const backgroundImage = ref(null);
-    const backgroundImageData = ref(null);
+    const profileImage = ref(null)
+    const profileImageData = ref(null)
+    const backgroundImage = ref(null)
+    const backgroundImageData = ref(null)
+
     const onAddTweet = async () => {
       try {
-        await addTweet(tweetBody.value, currentUser.value);
-        tweetBody.value = '';
-        emit('close-modal');
+        await addTweet(tweetBody.value, currentUser.value)
+        tweetBody.value = ''
+        emit('close-modal')
       } catch (e) {
-        console.log('on add tweet error on homepage:', e);
+        console.log('on add tweet error on homepage:', e)
       }
     }
 
     const onChangeBackgroundImage = () => {
-      document.getElementById('backgroundImageInput').click();
+      document.getElementById('backgroundImageInput').click()
     }
 
     const onChangeProfileImage = () => {
-      document.getElementById('profileImageInput').click();
+      document.getElementById('profileImageInput').click()
     }
 
     const previewBackgroundImage = (event) => {
-      const file = event.target.files[0];
-      let reader = new FileReader();
-      backgroundImageData.value = file;
+      const file = event.target.files[0]
+      backgroundImageData.value = file
+      let reader = new FileReader()
       reader.onload = function (event) {
-        backgroundImage.value.src = event.target.result;
+        backgroundImage.value.src = event.target.result
       }
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
 
     const previewProfileImage = (event) => {
-      const file = event.target.files[0];
-      let reader = new FileReader();
-      profileImageData.value = file;
+      const file = event.target.files[0]
+      profileImageData.value = file
+      let reader = new FileReader()
       reader.onload = function (event) {
-        profileImage.value.src = event.target.result;
+        profileImage.value.src = event.target.result
       }
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
 
     const onSaveProfile = async () => {
-      if(!profileImageData.value && !backgroundImageData.value) {
-        return;
+      if (!profileImageData.value && !backgroundImageData.value) {
+        return
       }
 
-      if(profileImageData.value) {
+      if (profileImageData.value) {
         try {
-          const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/profile`).put(profileImageData.value);
-          const url = await uploadTask.ref.getDownloadURL();
-          await USER_COLLECTION.doc(currentUser.value.uid).update({
-            profile_image_url: url
-          });
-          store.commit('SET_PROFILE_IMAGE', url);
-        } catch(e) {
-          console.log(`profile image data error: ${e}`);
+          const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/profile`).put(profileImageData.value)
+          const url = await uploadTask.ref.getDownloadURL()
+          await USER_COLEECTION.doc(currentUser.value.uid).update({
+            profile_image_url: url,
+          })
+          store.commit('SET_PROFILE_IMAGE', url)
+        } catch (e) {
+          console.log(`profile image data error:${e}`)
         }
       }
 
-      if(backgroundImageData.value) {
+      if (backgroundImageData.value) {
         try {
-          const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/background`).put(backgroundImageData.value);
-          const url = await uploadTask.ref.getDownloadURL();
-          await USER_COLLECTION.doc(currentUser.value.uid).update({
-            background_image_url: url
-          });
-          store.commit('SET_BACKGROUND_IMAGE', url);
-        } catch(e) {
-          console.log(`profile image data error: ${e}`);
+          const uploadTask = await storage.ref(`profile/${currentUser.value.uid}/background`).put(backgroundImageData.value)
+          const url = await uploadTask.ref.getDownloadURL()
+          await USER_COLEECTION.doc(currentUser.value.uid).update({
+            background_image_url: url,
+          })
+          store.commit('SET_BACKGROUND_IMAGE', url)
+        } catch (e) {
+          console.log(`profile image data error:${e}`)
         }
       }
 
-      emit('close-modal');
+      emit('close-modal')
     }
 
     return {
@@ -146,15 +146,14 @@ export default {
       onChangeProfileImage,
       previewBackgroundImage,
       previewProfileImage,
-      backgroundImage,
       profileImage,
+      backgroundImage,
       onSaveProfile,
       profileImageData,
-      backgroundImageData
+      backgroundImageData,
     }
-  }
+  },
 }
-
 </script>
 
 <style></style>
