@@ -93,24 +93,24 @@ export default {
     const showProfileEditModal =  ref(false);
 
     onBeforeMount(() => {
-      const profileUID = route.params.uid ?? currentUser.value.uid
+      const profileUID = route.params.uid ?? currentUser.value.uid;
 
       USER_COLLECTION.doc(profileUID).onSnapshot((doc) => {
-        profileUser.value = doc.data()
+        profileUser.value = doc.data();
       })
 
       TWEET_COLLECTION.where('uid', '==', profileUID)
           .orderBy('created_at', 'desc')
           .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach(async (change) => {
-              let tweet = await getTweetInfo(change.doc.data(), currentUser.value)
+              let tweet = await getTweetInfo(change.doc.data(), currentUser.value);
 
               if (change.type === 'added') {
-                tweets.value.splice(change.newIndex, 0, tweet)
+                tweets.value.splice(change.newIndex, 0, tweet);
               } else if (change.type === 'modified') {
-                tweets.value.splice(change.oldIndex, 1, tweet)
+                tweets.value.splice(change.oldIndex, 1, tweet);
               } else if (change.type === 'removed') {
-                tweets.value.splice(change.oldIndex, 1)
+                tweets.value.splice(change.oldIndex, 1);
               }
             })
           })
@@ -119,15 +119,15 @@ export default {
           .orderBy('created_at', 'desc')
           .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach(async (change) => {
-              const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
-              let tweet = await getTweetInfo(doc.data(), currentUser.value)
+              const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get();
+              let tweet = await getTweetInfo(doc.data(), currentUser.value);
 
               if (change.type === 'added') {
-                reTweets.value.splice(change.newIndex, 0, tweet)
+                reTweets.value.splice(change.newIndex, 0, tweet);
               } else if (change.type === 'modified') {
-                reTweets.value.splice(change.oldIndex, 1, tweet)
+                reTweets.value.splice(change.oldIndex, 1, tweet);
               } else if (change.type === 'removed') {
-                reTweets.value.splice(change.oldIndex, 1)
+                reTweets.value.splice(change.oldIndex, 1);
               }
             })
           })
@@ -136,15 +136,15 @@ export default {
           .orderBy('created_at', 'desc')
           .onSnapshot((snapshot) => {
             snapshot.docChanges().forEach(async (change) => {
-              const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get()
-              let tweet = await getTweetInfo(doc.data(), currentUser.value)
+              const doc = await TWEET_COLLECTION.doc(change.doc.data().from_tweet_id).get();
+              let tweet = await getTweetInfo(doc.data(), currentUser.value);
 
               if (change.type === 'added') {
-                likeTweets.value.splice(change.newIndex, 0, tweet)
+                likeTweets.value.splice(change.newIndex, 0, tweet);
               } else if (change.type === 'modified') {
-                likeTweets.value.splice(change.oldIndex, 1, tweet)
+                likeTweets.value.splice(change.oldIndex, 1, tweet);
               } else if (change.type === 'removed') {
-                likeTweets.value.splice(change.oldIndex, 1)
+                likeTweets.value.splice(change.oldIndex, 1);
               }
             })
           })
@@ -152,25 +152,25 @@ export default {
 
     const onFollow = async () => {
       await USER_COLLECTION.doc(currentUser.value.uid).update({
-        followings: firebase.firestore.FieldValue.arrayUnion(profileUser.value.uid),
+        followings: firebase.firestore.FieldValue.arrayUnion(profileUser.value.uid)
       })
 
       await USER_COLLECTION.doc(profileUser.value.uid).update({
-        followers: firebase.firestore.FieldValue.arrayUnion(currentUser.value.uid),
+        followers: firebase.firestore.FieldValue.arrayUnion(currentUser.value.uid)
       })
 
-      store.commit('SET_FOLLOW', profileUser.value.uid)
+      store.commit('SET_FOLLOW', profileUser.value.uid);
     }
 
     const onUnFollow = async () => {
       await USER_COLLECTION.doc(currentUser.value.uid).update({
-        followings: firebase.firestore.FieldValue.arrayRemove(profileUser.value.uid),
+        followings: firebase.firestore.FieldValue.arrayRemove(profileUser.value.uid)
       })
 
       await USER_COLLECTION.doc(profileUser.value.uid).update({
-        followers: firebase.firestore.FieldValue.arrayRemove(currentUser.value.uid),
+        followers: firebase.firestore.FieldValue.arrayRemove(currentUser.value.uid)
       })
-      store.commit('SET_UN_FOLLOW', profileUser.value.uid)
+      store.commit('SET_UN_FOLLOW', profileUser.value.uid);
     }
 
     return {
